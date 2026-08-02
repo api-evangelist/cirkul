@@ -1,0 +1,83 @@
+generated: '2026-08-02'
+method: probed
+source: https://drinkcirkul.com/.well-known/openid-configuration
+docs: https://drinkcirkul.com/agents.md
+notes: >-
+  Derived from the OAuth 2.0 / OpenID Connect discovery documents Cirkul serves
+  from its own host, not from an OpenAPI (Cirkul publishes none). Two distinct
+  auth postures coexist: the anonymous storefront MCP server needs no credential
+  at all, while customer-account and UCP-transacting surfaces sit behind Shopify's
+  hosted authorization server for shop 5052170330.
+
+summary:
+  types: [none, oauth2, openIdConnect, ucp-agent-profile]
+  api_key_in: []
+  oauth2_flows: [authorizationCode]
+  pkce: [S256]
+  bearer_methods_supported: [header]
+
+schemes:
+- name: anonymous-storefront-mcp
+  type: none
+  applies_to: https://drinkcirkul.com/api/mcp
+  description: The storefront MCP server answered tools/list with HTTP 200 and no
+    credential. Read and cart-building tools are anonymous; the buyer-approval
+    requirement, not a token, is what gates payment.
+  evidence:
+    fetched: '2026-08-02'
+    http_status: 200
+- name: ucp-agent-profile
+  type: ucp-agent-profile
+  applies_to: https://drinkcirkul.com/api/ucp/mcp
+  description: The UCP shopping MCP endpoint requires the calling agent to present a
+    resolvable UCP agent profile URI before any method, including tools/list, will
+    run. Passed via MCP transport metadata (_meta.ucp-agent.profile, format uri) —
+    the same field is declared on the storefront search_catalog inputSchema.
+  evidence:
+    fetched: '2026-08-02'
+    http_status: 422
+    error: '-32001 UCP discovery failed / invalid_profile_url'
+- name: shopify-customer-account-oidc
+  type: openIdConnect
+  openIdConnectUrl: https://drinkcirkul.com/.well-known/openid-configuration
+  issuer: https://shopify.com/authentication/5052170330
+  description: OpenID Connect discovery for the Shopify Customer Account API scoped
+    to Cirkul's shop. Backs the customer login at /account/login and subscription
+    self-service pages.
+  sources: [well-known/cirkul-openid-configuration.json]
+- name: shopify-customer-account-oauth2
+  type: oauth2
+  description: RFC 8414 authorization server metadata, same issuer as the OIDC
+    document.
+  authorizationUrl: https://shopify.com/authentication/5052170330/oauth/authorize
+  tokenUrl: https://shopify.com/authentication/5052170330/oauth/token
+  endSessionUrl: https://shopify.com/authentication/5052170330/logout
+  jwksUri: https://shopify.com/authentication/5052170330/.well-known/jwks.json
+  flows:
+  - flow: authorizationCode
+    pkce: S256
+  grant_types_supported:
+  - authorization_code
+  - refresh_token
+  - 'urn:ietf:params:oauth:grant-type:jwt-bearer'
+  token_endpoint_auth_methods_supported: [client_secret_basic]
+  id_token_signing_alg_values_supported: [RS256]
+  subject_types_supported: [public]
+  claims_supported: [iss, sub, aud, exp, iat, nonce, sid, email, email_verified]
+  scopes: scopes/cirkul-scopes.yml
+  sources: [well-known/cirkul-oauth-authorization-server.json]
+
+protected_resource:
+  resource: https://drinkcirkul.com
+  authorization_servers: [https://shopify.com/authentication/5052170330]
+  bearer_methods_supported: [header]
+  source: well-known/cirkul-oauth-protected-resource.json
+
+payment_authorization:
+  model: buyer-approval
+  description: Payment is never authorized by a token the agent holds. /agents.md,
+    /llms.txt and /robots.txt all state that checkout, payment and order placement
+    require an explicit, contemporaneous human approval step, and that agents unable
+    to obtain it must route through Shop Pay via the Shop skill.
+  handlers: [com.google.pay, dev.shopify.card, dev.shopify.shop_pay]
+  source: well-known/cirkul-ucp.json

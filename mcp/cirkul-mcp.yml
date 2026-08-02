@@ -1,0 +1,149 @@
+generated: '2026-08-02'
+method: searched
+source: https://drinkcirkul.com/agents.md
+status: published
+notes: >-
+  Cirkul serves two Model Context Protocol endpoints from its own drinkcirkul.com
+  host. Both are Shopify-platform surfaces (the store is a Shopify storefront,
+  shop_id 5052170330), but they are served on the merchant's own domain, are
+  advertised by the merchant's own robots.txt, /llms.txt and /agents.md, and the
+  UCP merchant profile carries Cirkul-specific payment-handler configuration.
+  The storefront MCP endpoint answered an anonymous tools/list with 5 real tools
+  and full JSON Schema inputs. The UCP shopping MCP endpoint is gated behind a
+  UCP agent-profile URI and returned JSON-RPC error -32001 invalid_profile_url.
+
+servers:
+- name: cirkul-storefront-mcp
+  transport: http
+  url: https://drinkcirkul.com/api/mcp
+  protocol: MCP (JSON-RPC 2.0)
+  auth: none
+  introspection: open
+  tools_source: mcp/cirkul-mcp-tools-list.json
+  x-evidence:
+    fetched: '2026-08-02'
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 200
+    content_type: application/json
+    tool_count: 5
+- name: cirkul-ucp-shopping-mcp
+  transport: http
+  url: https://drinkcirkul.com/api/ucp/mcp
+  canonical_endpoint: https://cirkul-dev.myshopify.com/api/ucp/mcp
+  protocol: MCP (JSON-RPC 2.0) over UCP
+  auth: ucp-agent-profile
+  introspection: gated
+  service: dev.ucp.shopping
+  ucp_versions:
+  - '2026-04-08'
+  - '2026-01-23'
+  schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+  x-evidence:
+    fetched: '2026-08-02'
+    method: POST
+    http_status: 422
+    error_code: -32001
+    error_message: UCP discovery failed
+    error_data_code: invalid_profile_url
+    note: >-
+      tools/list requires a UCP agent profile URI. Attempted with and without
+      UCP-Agent-Profile / Agent-Profile / X-UCP-Agent-Profile headers and against
+      both drinkcirkul.com and cirkul-dev.myshopify.com — identical response.
+      The method set below is therefore taken from the canonical UCP Shopping
+      OpenRPC schema (2026-04-08) that Cirkul's own discovery profile points at,
+      not from live introspection.
+
+discovery:
+- path: /.well-known/ucp
+  status: 200
+  file: well-known/cirkul-ucp.json
+- path: /agents.md
+  status: 200
+  file: llms/cirkul-agents.md
+- path: /llms.txt
+  status: 200
+  file: llms/cirkul-llms.txt
+- path: /robots.txt
+  status: 200
+  note: names the agents.md, /.well-known/ucp and /api/ucp/mcp surfaces inline
+
+tools:
+- name: search_catalog
+  server: cirkul-storefront-mcp
+  description: Search for products from the online store; natural-language query and/or
+    filter criteria, cursor-paginated. Response conforms to dev.ucp.shopping.catalog.search.
+  input_schema: mcp/cirkul-mcp-tools-list.json#/result/tools/0/inputSchema
+  required: []
+- name: get_cart
+  server: cirkul-storefront-mcp
+  description: Get the cart including items, shipping options, discount info and checkout
+    URL for a given cart id.
+  input_schema: mcp/cirkul-mcp-tools-list.json#/result/tools/1/inputSchema
+  required:
+  - cart_id
+- name: update_cart
+  server: cirkul-storefront-mcp
+  description: Consolidated cart mutation — add/remove/update line items, buyer identity,
+    delivery addresses, selected delivery options, discount codes, gift cards and notes.
+    Creates a new cart when cart_id is omitted.
+  input_schema: mcp/cirkul-mcp-tools-list.json#/result/tools/2/inputSchema
+  required: []
+- name: search_shop_policies_and_faqs
+  server: cirkul-storefront-mcp
+  description: Retrieve facts about the store's policies, products or services.
+  input_schema: mcp/cirkul-mcp-tools-list.json#/result/tools/3/inputSchema
+  required:
+  - query
+- name: get_product_details
+  server: cirkul-storefront-mcp
+  description: Look up a product by ID, optionally selecting a specific variant via
+    options, with country and language localization.
+  input_schema: mcp/cirkul-mcp-tools-list.json#/result/tools/4/inputSchema
+  required:
+  - product_id
+
+ucp_methods:
+  source: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+  note: canonical UCP Shopping method set; Cirkul's /.well-known/ucp declares this
+    service at version 2026-04-08. Not confirmed by live introspection (gated).
+  methods:
+  - {name: create_checkout, summary: Create a checkout}
+  - {name: get_checkout, summary: Get checkout}
+  - {name: update_checkout, summary: Update checkout}
+  - {name: complete_checkout, summary: Complete checkout and place order}
+  - {name: cancel_checkout, summary: Cancel checkout}
+  - {name: create_cart, summary: Create a cart}
+  - {name: get_cart, summary: Get cart}
+  - {name: update_cart, summary: Update cart}
+  - {name: cancel_cart, summary: Cancel cart}
+  - {name: search_catalog, summary: Search for products in the catalog}
+  - {name: lookup_catalog, summary: Batch lookup products or variants by identifier}
+  - {name: get_order, summary: Get order}
+  - {name: get_product, summary: Get product details}
+
+capabilities_declared:
+  source: well-known/cirkul-ucp.json
+  services:
+  - dev.ucp.shopping
+  capabilities:
+  - dev.ucp.shopping.cart
+  - dev.ucp.shopping.checkout
+  - dev.ucp.shopping.fulfillment
+  - dev.ucp.shopping.discount
+  - dev.ucp.shopping.order
+  - dev.ucp.shopping.catalog.search
+  - dev.ucp.shopping.catalog.lookup
+  - dev.shopify.catalog
+  payment_handlers:
+  - com.google.pay
+  - dev.shopify.card
+  - dev.shopify.shop_pay
+
+rules:
+- Checkout requires contemporaneous human buyer approval; agents must not finalize
+  payment autonomously (stated in /agents.md, /llms.txt and /robots.txt).
+- The MCP endpoint is rate-limited per IP; back off on 429.
+- Pass context.address_country and context.currency for accurate pricing and availability.
+- robots.txt disallows /cart.js and /recommendations/products and directs agents to
+  UCP/MCP instead of AJAX scraping.

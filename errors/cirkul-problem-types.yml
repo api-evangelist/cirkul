@@ -1,0 +1,56 @@
+generated: '2026-08-02'
+method: probed
+source: https://drinkcirkul.com/api/ucp/mcp
+format: jsonrpc-2.0-error
+notes: >-
+  Cirkul publishes no OpenAPI and no error reference page, so nothing here is
+  derived from a spec. Every entry below was either observed live during probing
+  or is stated in Cirkul's own published agent instructions. The transport error
+  envelope is JSON-RPC 2.0, not RFC 9457 problem+json — no application/problem+json
+  response was seen on any Cirkul surface.
+envelope:
+  media_type: application/json
+  shape: JSON-RPC 2.0 error object
+  fields:
+  - jsonrpc
+  - id
+  - error.code
+  - error.message
+  - error.data.code
+  - error.data.content
+  - error.data.continue_url
+  example_observed: |
+    {"jsonrpc":"2.0","id":1,"error":{"code":-32001,"message":"UCP discovery failed",
+    "data":{"code":"invalid_profile_url","content":"Unable to fetch agent profile: Missing profile uri",
+    "continue_url":"https://cirkul-dev.myshopify.com/"}}}
+problems:
+- code: -32001
+  http_status: 422
+  data_code: invalid_profile_url
+  title: UCP discovery failed
+  detail: 'Unable to fetch agent profile: Missing profile uri'
+  surface: https://drinkcirkul.com/api/ucp/mcp
+  remediation: Present a resolvable UCP agent profile URI in the MCP transport metadata
+    (_meta.ucp-agent.profile) before calling any UCP shopping method.
+  method: probed
+  observed: '2026-08-02'
+- http_status: 429
+  title: Rate limited
+  detail: The MCP endpoint is rate-limited per IP.
+  surface: https://drinkcirkul.com/api/mcp
+  remediation: Back off on 429 responses.
+  method: searched
+  source: https://drinkcirkul.com/agents.md
+- http_status: 404
+  title: Not Found
+  detail: Shopify storefront 404 page, returned as HTML for unknown paths including
+    /.well-known/security.txt, /.well-known/agent-card.json and /openapi.json.
+  surface: https://drinkcirkul.com
+  method: probed
+  observed: '2026-08-02'
+gaps:
+- No published error-code reference for the storefront MCP tools.
+- No RFC 9457 application/problem+json usage observed.
+- Tool-level error semantics (invalid cart_id, out-of-stock variant, declined
+  discount code) are not documented publicly and could not be exercised without
+  transacting.

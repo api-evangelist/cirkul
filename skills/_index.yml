@@ -1,0 +1,30 @@
+generated: '2026-08-02'
+method: generated
+source: mcp/cirkul-mcp-tools-list.json
+notes: >-
+  Cirkul publishes no OpenAPI, so these skills are grounded in the live MCP tool
+  manifest instead — every operation named below appears verbatim in the tools/list
+  response captured at mcp/cirkul-mcp-tools-list.json, and every parameter
+  referenced comes from that tool's own inputSchema. No provider-published
+  AGENTS.md-style skill file exists; /agents.md is prose agent instructions, saved
+  at llms/cirkul-agents.md.
+skills:
+- file: cirkul-find-flavors.md
+  name: Find and compare Cirkul flavors and bottles
+  api: mcp/cirkul-mcp.yml
+  surface: https://drinkcirkul.com/api/mcp
+  auth: none
+  operations:
+  - search_catalog
+  - get_product_details
+  - search_shop_policies_and_faqs
+- file: cirkul-build-cart.md
+  name: Build a Cirkul cart and hand off for buyer approval
+  api: mcp/cirkul-mcp.yml
+  surface: https://drinkcirkul.com/api/mcp
+  auth: none
+  operations:
+  - search_catalog
+  - get_product_details
+  - update_cart
+  - get_cart

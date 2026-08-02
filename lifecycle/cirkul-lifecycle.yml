@@ -1,0 +1,71 @@
+generated: '2026-08-02'
+method: probed
+source: https://drinkcirkul.com/.well-known/ucp
+notes: >-
+  Cirkul runs no developer program of its own, so there is no API versioning policy,
+  changelog, SLA, status page or deprecation policy on any Cirkul host. What
+  versioning exists is protocol versioning inherited from UCP, and Cirkul's own
+  discovery profile declares which versions it accepts — that is real, machine-readable,
+  and served from Cirkul's domain, so it is recorded here.
+
+versioning:
+  scheme: dated-protocol
+  current: '2026-04-08'
+  supported:
+  - version: '2026-04-08'
+    profile: https://cirkul-dev.myshopify.com/.well-known/ucp/2026-04-08
+    label: latest stable
+  - version: '2026-01-23'
+    profile: https://cirkul-dev.myshopify.com/.well-known/ucp/2026-01-23
+  negotiation: GET /.well-known/ucp -> ucp.supported_versions
+  docs: https://drinkcirkul.com/agents.md
+  spec: https://ucp.dev/2026-04-08/specification/overview/
+
+capability_version_floors:
+  note: capabilities in Cirkul's discovery profile declare their own minimum protocol
+    version.
+  entries:
+  - capability: dev.ucp.shopping.fulfillment
+    requires_protocol_min: '2026-04-08'
+  - capability: dev.ucp.shopping.discount
+    requires_protocol_min: '2026-04-08'
+  - capability: dev.shopify.catalog
+    requires_protocol_min: '2026-04-08'
+
+payment_handler_versions:
+- handler: com.google.pay
+  version: '2026-01-11'
+- handler: dev.shopify.card
+  version: '2026-01-15'
+- handler: dev.shopify.shop_pay
+  version: '2026-04-08'
+
+deprecation:
+  policy_url: null
+  sunset_header: unknown
+  note: no deprecation or Sunset/Deprecation-header policy is published. The only
+    deprecation signal is the older UCP version 2026-01-23 still being listed as
+    supported alongside the current one, with no stated removal date.
+
+sla:
+  url: null
+  uptime_target: null
+
+status_page:
+  url: null
+  note: status.drinkcirkul.com does not resolve; no status page is linked from the
+    site, robots.txt, /agents.md or /llms.txt.
+
+changelog:
+  url: null
+  note: the /blogs/cirkular blog is consumer marketing content, not a product or API
+    changelog. sitemap_agentic_discovery.xml declares /agents.md changefreq weekly,
+    which is the only cadence signal published for the agent surface.
+
+deprecated_operations: []
+
+x-evidence:
+  fetched: '2026-08-02'
+  url: https://drinkcirkul.com/.well-known/ucp
+  http_status: 200
+  content_type: application/json

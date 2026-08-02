@@ -1,18 +1,85 @@
 aid: cirkul
 name: Cirkul
-description: 'Cirkul is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Cirkul, Inc. is a Tampa, Florida direct-to-consumer beverage company
+  founded in 2016 by Garrett Waggoner and Andy Gay. Cirkul sells a reusable bottle
+  system paired with patented flavor cartridges — called Sips — that sit in the bottle
+  lid behind a dial, letting a drinker adjust flavor intensity without pre-mixing.
+  The cartridge lines include LifeSip, FitSip and GoSip, covering more than 100 zero-sugar,
+  zero-calorie flavors spanning fruit blends, iced teas, iced coffees and caffeinated
+  and electrolyte formulations. Cirkul does not publish a general-purpose developer
+  API or an OpenAPI definition; its machine-readable surface is an agent-commerce one,
+  served from its own drinkcirkul.com Shopify storefront: an anonymous Model Context
+  Protocol server at /api/mcp, a Universal Commerce Protocol (UCP) merchant profile
+  at /.well-known/ucp, a UCP shopping MCP endpoint at /api/ucp/mcp, published agent
+  instructions at /agents.md and /llms.txt, and OAuth 2.0 / OpenID Connect discovery
+  for the Shopify Customer Account API.'
 url: https://raw.githubusercontent.com/api-evangelist/cirkul/refs/heads/main/apis.yml
+image: https://drinkcirkul.com/cdn/shop/files/MRKTG_0108_25_Meta_Data_Image_Update-You-got-CirkulArtboard_1.jpg
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment
 specificationVersion: '0.20'
 created: '2026-08-02'
 modified: '2026-08-02'
+x-enrichment:
+  date: '2026-08-02'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v1
 tags:
 - Company
-apis: []
+- Beverages
+- Consumer Packaged Goods
+- Direct to Consumer
+- Ecommerce
+- Retail
+- Subscription Commerce
+- Agentic Commerce
+- Model Context Protocol
+- Universal Commerce Protocol
+- Shopify
+- Hydration
+apis:
+- aid: cirkul:storefront-agent-api
+  name: Cirkul Storefront Agent API
+  description: 'The agent-facing commerce surface Cirkul serves from its own drinkcirkul.com
+    host. It comprises an anonymous Model Context Protocol (MCP) server at /api/mcp
+    exposing five tools with real JSON Schema inputs (search_catalog, get_cart, update_cart,
+    search_shop_policies_and_faqs, get_product_details), a Universal Commerce Protocol
+    merchant discovery profile at /.well-known/ucp declaring cart, checkout, fulfillment,
+    discount, order and catalog capabilities plus Shop Pay, Google Pay and card payment
+    handlers, and a UCP shopping MCP endpoint at /api/ucp/mcp whose tools/list is gated
+    behind a UCP agent-profile URI. Read-only catalog JSON (products.json, collection
+    products.json) is documented for agents that only need to browse. Checkout explicitly
+    requires contemporaneous human buyer approval.'
+  humanURL: https://drinkcirkul.com/agents.md
+  baseURL: https://drinkcirkul.com
+  tags:
+  - Agentic Commerce
+  - Model Context Protocol
+  - Universal Commerce Protocol
+  - Ecommerce
+  - Catalog
+  - Cart
+  - Checkout
+  properties:
+  - type: MCPServer
+    url: mcp/cirkul-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/cirkul-tool-crosswalk.yml
+  - type: LLMsTxt
+    url: llms/cirkul-llms.txt
+  - type: Authentication
+    url: authentication/cirkul-authentication.yml
+  - type: OAuthScopes
+    url: scopes/cirkul-scopes.yml
+  - type: ErrorCatalog
+    url: errors/cirkul-problem-types.yml
+  - type: Conventions
+    url: conventions/cirkul-conventions.yml
+  - type: AgentSkill
+    url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +87,58 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
+  url: https://drinkcirkul.com/
+- type: SecondaryMarket
   url: https://forgeglobal.com/cirkul_stock/
+- type: About
+  url: https://drinkcirkul.com/pages/about
+- type: Documentation
+  url: https://drinkcirkul.com/agents.md
+- type: GettingStarted
+  url: https://drinkcirkul.com/pages/getting-started
+- type: Support
+  url: https://drinkcirkul.com/pages/contact-us
+- type: HelpCenter
+  url: https://drinkcirkul.com/pages/faq
+- type: Blog
+  url: https://drinkcirkul.com/blogs/cirkular
+- type: GitHubOrganization
+  url: https://github.com/drinkcirkul
+- type: Pricing
+  url: https://drinkcirkul.com/pages/plans
+- type: SignUp
+  url: https://drinkcirkul.com/account/login
+- type: TermsOfService
+  url: https://drinkcirkul.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://drinkcirkul.com/policies/privacy-policy
+- type: Careers
+  url: https://drinkcirkul.com/pages/careers
+- type: StoreLocator
+  url: https://drinkcirkul.com/pages/store-locator
+- type: Sustainability
+  url: https://drinkcirkul.com/pages/recycling
+- type: MCPServer
+  url: mcp/cirkul-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/cirkul-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/cirkul-llms.txt
+- type: WellKnown
+  url: well-known/cirkul-well-known.yml
+- type: Authentication
+  url: authentication/cirkul-authentication.yml
+- type: OAuthScopes
+  url: scopes/cirkul-scopes.yml
+- type: Conformance
+  url: conformance/cirkul-conformance.yml
+- type: ErrorCatalog
+  url: errors/cirkul-problem-types.yml
+- type: Conventions
+  url: conventions/cirkul-conventions.yml
+- type: Lifecycle
+  url: lifecycle/cirkul-lifecycle.yml
+- type: DomainSecurity
+  url: security/cirkul-domain-security.yml
+- type: AgentSkill
+  url: skills/_index.yml

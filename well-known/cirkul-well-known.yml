@@ -1,0 +1,65 @@
+generated: '2026-08-02'
+method: probed
+source: https://drinkcirkul.com/
+host: https://drinkcirkul.com
+notes: >-
+  drinkcirkul.com is the single production host. cirkul.com, www.cirkul.com and
+  www.drinkcirkul.com all 301 to it. No api./developer./docs./status./trust./security.
+  subdomain resolves, so the well-known surface was probed on drinkcirkul.com only.
+documents:
+- path: /.well-known/ucp
+  description: Universal Commerce Protocol merchant discovery profile
+  status: 200
+  content_type: application/json
+  file: cirkul-ucp.json
+- path: /.well-known/openid-configuration
+  description: OpenID Connect discovery for the Shopify Customer Account API
+  status: 200
+  content_type: application/json
+  file: cirkul-openid-configuration.json
+- path: /.well-known/oauth-authorization-server
+  description: RFC 8414 OAuth 2.0 authorization server metadata
+  status: 200
+  content_type: application/json
+  file: cirkul-oauth-authorization-server.json
+- path: /.well-known/oauth-protected-resource
+  description: RFC 9728 OAuth 2.0 protected resource metadata
+  status: 200
+  content_type: application/json
+  file: cirkul-oauth-protected-resource.json
+- path: /.well-known/security.txt
+  description: RFC 9116 security contact
+  status: 404
+- path: /.well-known/api-catalog
+  description: RFC 9727 API catalog
+  status: 404
+- path: /.well-known/ai-plugin.json
+  status: 404
+- path: /.well-known/agent-card.json
+  description: A2A 1.0.0 agent card
+  status: 404
+- path: /.well-known/agent.json
+  description: A2A pre-0.3 legacy agent card
+  status: 404
+adjacent_agent_surfaces:
+- path: /agents.md
+  status: 200
+  file: ../llms/cirkul-agents.md
+  note: canonical agent-facing description, listed in sitemap_agentic_discovery.xml
+- path: /llms.txt
+  status: 200
+  file: ../llms/cirkul-llms.txt
+  note: mirrors /agents.md
+- path: /llms-full.txt
+  status: 200
+  note: identical to /llms.txt apart from the one line naming its own filename;
+    not a full docs dump. Not stored (gitignored artifact class).
+- path: /sitemap_agentic_discovery.xml
+  status: 200
+  note: a dedicated agent-discovery sitemap containing exactly one URL, /agents.md
+- path: /robots.txt
+  status: 200
+  note: names the agent surfaces and the human-approval-before-payment rule inline
+- path: /products.json
+  status: 200
+  note: anonymous read-only catalog JSON documented in /agents.md

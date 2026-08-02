@@ -1,0 +1,116 @@
+generated: '2026-08-02'
+method: derived
+source: mcp/cirkul-mcp-tools-list.json, well-known/cirkul-ucp.json, llms/cirkul-agents.md
+notes: >-
+  Cirkul publishes NO OpenAPI, so this crosswalk does not bind tools to
+  operationIds. It binds the three surfaces Cirkul actually serves against each
+  other: the anonymous storefront MCP server (/api/mcp, live-introspected, real
+  inputSchemas), the UCP shopping MCP endpoint (/api/ucp/mcp, gated — method set
+  taken from the canonical UCP Shopping OpenRPC 2026-04-08 that Cirkul's own
+  discovery profile points at), and the read-only storefront JSON paths that
+  /agents.md documents for browse-only agents. Confidence reflects that the UCP
+  side could not be live-introspected.
+
+surfaces:
+  openapi: null
+  openapi_note: no OpenAPI, Swagger, GraphQL or AsyncAPI definition found on any
+    Cirkul host after probing /openapi.json, /openapi.yaml, /swagger.json, /api-docs,
+    /docs and /redoc on drinkcirkul.com (all 404 or HTML shell), and after finding
+    no api./developer./docs. subdomain in DNS.
+  graphql: null
+  mcp:
+  - url: https://drinkcirkul.com/api/mcp
+    gated: false
+    introspected: true
+    tools: 5
+  - url: https://drinkcirkul.com/api/ucp/mcp
+    gated: true
+    introspected: false
+    gate: UCP agent-profile URI (JSON-RPC -32001 invalid_profile_url)
+    methods: 13
+  rest_readonly:
+  - GET /collections/all
+  - GET /products/{handle}
+  - GET /products/{handle}.json
+  - GET /collections/{handle}
+  - GET /collections/{handle}/products.json
+  - GET /search?q={query}&type=product
+  - GET /sitemap.xml
+  rest_readonly_source: llms/cirkul-agents.md
+  schema_registry: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+
+crosswalk:
+- tool: search_catalog
+  category: catalog
+  binding: mcp-to-ucp
+  ucp: [search_catalog]
+  rest: ['GET /collections/{handle}/products.json', 'GET /search?q={query}&type=product']
+  confidence: high
+  note: the storefront tool's own description states its response conforms to the UCP
+    capability dev.ucp.shopping.catalog.search; the REST paths are the documented
+    browse-only equivalent, not an identical contract.
+- tool: get_product_details
+  category: catalog
+  binding: mcp-to-ucp
+  ucp: [get_product, lookup_catalog]
+  rest: ['GET /products/{handle}.json']
+  confidence: medium
+  note: name and purpose align with the UCP get_product method; lookup_catalog is the
+    batch form. Not confirmed against the gated UCP endpoint.
+- tool: get_cart
+  category: cart
+  binding: mcp-to-ucp
+  ucp: [get_cart]
+  rest: []
+  confidence: high
+  note: identical method name in the UCP Shopping OpenRPC. robots.txt explicitly
+    disallows the AJAX /cart.js equivalent and directs agents here instead.
+- tool: update_cart
+  category: cart
+  binding: mcp-to-ucp
+  ucp: [update_cart, create_cart]
+  rest: []
+  confidence: high
+  note: the storefront tool fans in create and update — its own description says a
+    new cart is created when cart_id is omitted, which is UCP create_cart.
+- tool: search_shop_policies_and_faqs
+  category: content
+  binding: mcp-only
+  ucp: []
+  rest: ['GET /pages/faq', 'GET /policies/privacy-policy', 'GET /policies/terms-of-service']
+  confidence: high
+  note: no UCP Shopping method covers policy/FAQ retrieval; the HTML pages exist but
+    are not a structured equivalent.
+
+mcp_only:
+- tool: search_shop_policies_and_faqs
+  reason: no corresponding method in the UCP Shopping service; structured policy/FAQ
+    retrieval exists only on the storefront MCP server.
+
+ucp_only:
+- methods: [create_checkout, get_checkout, update_checkout, complete_checkout, cancel_checkout]
+  reason: the entire checkout capability is exposed only through the gated UCP shopping
+    endpoint. The anonymous storefront MCP server returns a checkout URL on the cart
+    but exposes no tool that advances or completes a checkout.
+- methods: [get_order]
+  reason: order retrieval is a UCP capability (dev.ucp.shopping.order) with no
+    anonymous storefront MCP tool.
+- methods: [cancel_cart]
+  reason: declared by the UCP Shopping schema; no storefront MCP equivalent.
+- methods: [lookup_catalog]
+  reason: batch identifier lookup has no anonymous storefront MCP tool (get_product_details
+    is single-product only).
+
+rest_only:
+- paths: ['GET /sitemap.xml', 'GET /collections/all', 'GET /products/{handle}', 'GET /collections/{handle}']
+  reason: crawl/browse surfaces for agents that do not transact; no MCP tool projection.
+
+coverage:
+  storefront_mcp_tools: 5
+  storefront_mcp_tools_bound_to_ucp: 4
+  mcp_only: 1
+  ucp_methods_declared: 13
+  ucp_methods_with_storefront_tool: 5
+  ucp_only_methods: 8
+  rest_readonly_paths: 7
+  openapi_operations: 0

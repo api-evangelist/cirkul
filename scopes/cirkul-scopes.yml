@@ -1,0 +1,44 @@
+generated: '2026-08-02'
+method: probed
+source: https://drinkcirkul.com/.well-known/openid-configuration
+notes: >-
+  Cirkul publishes no OpenAPI, so these scopes were not derived from a spec. They
+  are the scopes_supported list served verbatim by the OAuth 2.0 / OpenID Connect
+  discovery documents on Cirkul's own host, for the Shopify Customer Account API
+  authorization server bound to Cirkul's shop (5052170330). Descriptions are
+  written from the scope names and the standard OIDC meanings; Cirkul publishes no
+  scope reference page of its own.
+schemes:
+- name: shopify-customer-account-oauth2
+  source: well-known/cirkul-oauth-authorization-server.json
+  issuer: https://shopify.com/authentication/5052170330
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://shopify.com/authentication/5052170330/oauth/authorize
+    tokenUrl: https://shopify.com/authentication/5052170330/oauth/token
+    pkce: S256
+scopes:
+- scope: openid
+  description: Standard OpenID Connect scope; requests an ID token identifying the
+    signed-in Cirkul customer.
+  flows: [authorizationCode]
+  sources: [well-known/cirkul-openid-configuration.json]
+- scope: email
+  description: Releases the email and email_verified claims for the signed-in customer.
+  flows: [authorizationCode]
+  sources: [well-known/cirkul-openid-configuration.json]
+- scope: customer-account-api:full
+  description: Full access to the Shopify Customer Account API for this shop — the
+    signed-in customer's profile, addresses, orders and subscription plans.
+  flows: [authorizationCode]
+  sources: [well-known/cirkul-openid-configuration.json]
+- scope: customer-account-mcp-api:full
+  description: Full access to the customer-account MCP API — the authenticated,
+    customer-scoped counterpart to the anonymous storefront MCP server at /api/mcp.
+  flows: [authorizationCode]
+  sources: [well-known/cirkul-openid-configuration.json]
+x-evidence:
+  fetched: '2026-08-02'
+  url: https://drinkcirkul.com/.well-known/openid-configuration
+  http_status: 200
+  content_type: application/json
