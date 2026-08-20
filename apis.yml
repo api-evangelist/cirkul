@@ -32,6 +32,19 @@ tags:
 - Beverages
 - Consumer Packaged Goods
 - Direct to Consumer
+- E-Commerce
+- Retail
+- Subscription Commerce
+- Agentic Commerce
+- MCP
+- Universal Commerce Protocol
+- Shopify
+- Hydration
+tags_raw:
+- Company
+- Beverages
+- Consumer Packaged Goods
+- Direct to Consumer
 - Ecommerce
 - Retail
 - Subscription Commerce
@@ -56,6 +69,14 @@ apis:
   humanURL: https://drinkcirkul.com/agents.md
   baseURL: https://drinkcirkul.com
   tags:
+  - Agentic Commerce
+  - MCP
+  - Universal Commerce Protocol
+  - E-Commerce
+  - Catalog
+  - Cart
+  - Checkout
+  tags_raw:
   - Agentic Commerce
   - Model Context Protocol
   - Universal Commerce Protocol
