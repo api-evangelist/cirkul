@@ -92,7 +92,6 @@ apis:
     products.json) is documented for agents that only need to browse. Checkout explicitly
     requires contemporaneous human buyer approval.'
   humanURL: https://drinkcirkul.com/agents.md
-  baseURL: https://drinkcirkul.com
   tags:
   - Agentic Commerce
   - MCP
@@ -126,6 +125,9 @@ apis:
     url: conventions/cirkul-conventions.yml
   - type: AgentSkill
     url: skills/_index.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
