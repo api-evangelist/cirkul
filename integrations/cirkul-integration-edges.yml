@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/cirkul/integrations
+- https://n8n.io/integrations/cirkul/
+- https://composio.dev/toolkits/cirkul
+- https://monid.ai/tools/cirkul
+checked:
+- https://composio.dev/toolkits/cirkul
+- https://monid.ai/tools/cirkul
+- https://n8n.io/integrations/cirkul/
+- https://zapier.com/apps/cirkul/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
