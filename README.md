@@ -64,36 +64,105 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Cirkul, Inc. is a Tampa, Florida direct-to-consumer beverage company founded in 2016.
-It sells a reusable bottle system paired with patented flavor cartridges ("Sips") that
-sit in the lid behind a dial, letting a drinker set flavor intensity without pre-mixing.
+Cirkul, Inc. is a Tampa, Florida direct-to-consumer beverage company founded in 2016 by Garrett Waggoner and Andy Gay. Cirkul sells a reusable bottle system paired with patented flavor cartridges — called Sips — that sit in the bottle lid behind a dial, letting a drinker adjust flavor intensity without pre-mixing. The cartridge lines include LifeSip, FitSip and GoSip, covering more than 100 zero-sugar, zero-calorie flavors spanning fruit blends, iced teas, iced coffees and caffeinated and electrolyte formulations. Cirkul does not publish a general-purpose developer API or an OpenAPI definition; its machine-readable surface is an agent-commerce one, served from its own drinkcirkul.com Shopify storefront: an anonymous Model Context Protocol server at /api/mcp, a Universal Commerce Protocol (UCP) merchant profile at /.well-known/ucp, a UCP shopping MCP endpoint at /api/ucp/mcp, published agent instructions at /agents.md and /llms.txt, and OAuth 2.0 / OpenID Connect discovery for the Shopify Customer Account API.
 
-- Website — https://drinkcirkul.com/
-- Agent instructions — https://drinkcirkul.com/agents.md
-- GitHub — https://github.com/drinkcirkul
-- Secondary market listing — https://forgeglobal.com/cirkul_stock/
+**Areas:** Company · Beverages · Consumer Packaged Goods · Direct to Consumer · E-Commerce · Retail · Subscription Commerce · Agentic Commerce · MCP · Universal Commerce Protocol · Shopify · Hydration
 
-## API surface
+## Cirkul on APIs.io
 
-Cirkul runs **no developer program**: no OpenAPI, no GraphQL, no SDKs, no CLI, no
-status page, no changelog, no `security.txt`. What it does have is an
-**agent-commerce surface**, served from its own `drinkcirkul.com` host:
+Everything profiled for Cirkul is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/cirkul/](https://apis.io/providers/cirkul/)** — or go straight to one of the APIs or properties below.
 
-| Surface | Path | State |
-|---|---|---|
-| Storefront MCP server | `POST /api/mcp` | live, anonymous, 5 tools with real JSON Schema inputs |
-| UCP shopping MCP | `POST /api/ucp/mcp` | live, gated behind a UCP agent-profile URI |
-| UCP merchant profile | `GET /.well-known/ucp` | 200 — 8 capabilities, 3 payment handlers |
-| Agent instructions | `GET /agents.md`, `GET /llms.txt` | 200 |
-| Agent discovery sitemap | `GET /sitemap_agentic_discovery.xml` | 200 |
-| OAuth 2.0 / OIDC discovery | `GET /.well-known/openid-configuration` | 200 — Shopify Customer Account API |
-| A2A agent card | `/.well-known/agent-card.json` | 404 |
+### APIs (1)
 
-The storefront is built on Shopify, and these are Shopify-platform surfaces — but
-they are served on Cirkul's own domain, advertised by Cirkul's own `robots.txt`, and
-the UCP profile carries Cirkul-specific merchant and payment-handler configuration.
+- [Cirkul Storefront Agent API](https://apis.io/apis/cirkul/storefront-agent-api/) — The agent-facing commerce surface Cirkul serves from its own drinkcirkul.com host. It comprises an anonymous Model Context Protocol (MCP) server at /api/mcp…
 
-Cirkul states in three places that **checkout requires contemporaneous human
-approval**; agents may build a cart but must not finalize payment.
+### Published properties
 
-See `apis.yml` for the full artifact index.
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [cirkul-mcp.yml](https://apis.io/servers/cirkul/cirkul-mcp-yml/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Cirkul Authentication](https://apis.io/security/cirkul/cirkul-authentication/)
+- [Cirkul Domain Security](https://apis.io/security/cirkul/cirkul-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Cirkul Scopes](https://apis.io/scopes/cirkul/cirkul-scopes/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://drinkcirkul.com/)
+- [Documentation](https://drinkcirkul.com/agents.md)
+- [Getting started](https://drinkcirkul.com/pages/getting-started)
+- [Pricing](https://drinkcirkul.com/pages/plans)
+- [Sign up](https://drinkcirkul.com/account/login)
+- [Support](https://drinkcirkul.com/pages/contact-us)
+- [Blog](https://drinkcirkul.com/blogs/cirkular)
+- [Terms of service](https://drinkcirkul.com/policies/terms-of-service)
+- [Privacy policy](https://drinkcirkul.com/policies/privacy-policy)
+- [GitHub](https://github.com/drinkcirkul)
+
+## API Evangelist rating
+
+**Kin Score 29.5** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.7 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 2.6 |
+| Developer ergonomics | 42.3 |
+| Access clarity | 44.7 |
+
+**Agent readiness 21.2** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | platform (partial credit) |
+
+**Regulatory alignment 34.3** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/cirkul/](https://apis.io/providers/cirkul/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Cirkul: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/cirkul/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
